@@ -2,12 +2,9 @@ function run () {
     var data = [];
     var More = configValue ? configValue : 1;
 
-    // ====== 闲鱼币主页面（抓包确认）======
     var COIN_HOME = "https://ssr.m.goofish.com/wow/moyu/moyu-project/xianyu-coin-new/pages/home?x-ssr=true&channel=mypersonal&force_ssr=true&forceWebView2001=true&useCusFont=true";
     var XY_HOME = "https://m.xianyu.com";
 
-    // ====== 关键：用 taobaolite 作为 scheme（淘宝容器通用）======
-    // 经验证 taobaolite:// 可以打开 Xianyu App
     var xianyuScheme = {
       scheme:"taobaolite",
       main:"taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
