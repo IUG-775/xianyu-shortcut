@@ -2,28 +2,24 @@ function run () {
     var data = [];
     var More = configValue ? configValue : 1;
 
-    // ====== 闲鱼币主页面（抓包确认的核心地址）======
-    // 完整参数: ssr.m.goofish.com/wow/moyu/moyu-project/xianyu-coin-new/pages/home?x-ssr=true&channel=mypersonal&force_ssr=true&forceWebView2001=true&useCusFont=true
+    // ====== 闲鱼币主页面（抓包确认）======
     var COIN_HOME = "https://ssr.m.goofish.com/wow/moyu/moyu-project/xianyu-coin-new/pages/home?x-ssr=true&channel=mypersonal&force_ssr=true&forceWebView2001=true&useCusFont=true";
-
-    // ====== 闲鱼首页（备用）======
     var XY_HOME = "https://m.xianyu.com";
 
-    // ====== Scheme 模式 ======
-    // 模式1: 仅闲鱼币主页面
+    // ====== 关键：用 taobaolite 作为 scheme（淘宝容器通用）======
+    // 经验证 taobaolite:// 可以打开 Xianyu App
     var xianyuScheme = {
-      scheme:"xianyu",
-      main:"xianyu://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
-      start: "xianyu://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
-      end: "xianyu://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME)
+      scheme:"taobaolite",
+      main:"taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
+      start: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
+      end: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME)
     };
 
-    // 模式2: 闲鱼币 + 闲鱼首页（先签到再回首页）
     var browseScheme = {
-      scheme:"xianyu",
-      main:"xianyu://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME),
-      start: "xianyu://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
-      end: "xianyu://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME),
+      scheme:"taobaolite",
+      main:"taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME),
+      start: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
+      end: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME),
       type:"url"
     };
 
@@ -45,7 +41,6 @@ function run () {
         var wait = oneTask.task.wait;
         var paramObj = oneTask.task.param || {};
 
-        // ====== 任务前访问主页面（关键步骤：先到主页面再走具体任务）======
         if (s && s.start) {
           data.push({
             url: s.start,
@@ -53,7 +48,6 @@ function run () {
           });
         }
 
-        // ====== Before 任务（前置）======
         before.map(function(v) {
           var fullUrl = "https" + v.url;
           data.push({
@@ -62,18 +56,15 @@ function run () {
           });
         });
 
-        // ====== 主页面（再次访问以确保上下文）======
         data.push({
           url: s.main,
           wait: 5
         });
 
-        // ====== 主任务项（每个 item 对应一个任务页）======
         itme.map(function(v, i) {
           var parts = v.split(" ");
           var url = baseUrl;
 
-          // 替换 paramObj 中的占位词（随机选一个）
           for (var key in paramObj) {
             var arr = paramObj[key];
             if (arr && arr.length > 0) {
@@ -83,23 +74,20 @@ function run () {
             }
           }
 
-          // 替换 占位参数1, 占位参数2, ... 编号替换
           parts.map(function(p, idx) {
             if (p) {
               var num = idx + 1;
-              var reg = new RegExp("占位参数" + num, "g");
+              var reg = new RegExp("\u5360\u4f4d\u53c2\u6570" + num, "g");
               url = url.replace(reg, p);
             }
           });
 
-          // 构造深链: xianyu://m.xianyu.com/tbopen/index.html?h5Url=<encoded H5 URL>
           var h5Url = "https" + url;
           data.push({
             url: s.scheme + "://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(h5Url),
             wait: wait
           });
 
-          // 每 3 个任务回到主页面（避免闲鱼 App 栈过深导致内存问题）
           if (i > 0 && i % 3 === 0) {
             data.push({
               url: s.main,
@@ -108,7 +96,6 @@ function run () {
           }
         });
 
-        // ====== 结束页 ======
         if (s && s.end) {
           data.push({
             url: s.end,
@@ -118,7 +105,6 @@ function run () {
       });
     });
 
-    // ====== 断点续跑支持 ======
     if (runNum && runNum > 0 && runNum !== 1) {
       data = data.splice(runNum - 1, data.length);
     }
