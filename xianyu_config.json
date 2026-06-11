@@ -33,7 +33,7 @@
     "taskData": {
         "tag": "xianyu_daily",
         "common": {
-            "url": "https://raw.githubusercontent.com/jiutiao/TTTASK/refs/heads/master/src/xianyu/new/xy_engine.txt"
+            "url": "https://raw.githubusercontent.com/IUG-775/xianyu-shortcut/main/xianyu_engine.txt"
         },
         "闲鱼币日常": {
             "type": "task1",
