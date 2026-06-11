@@ -1,0 +1,75 @@
+{
+    "activity": {
+        "tip": "运行前请确保已安装闲鱼App\n-----------\n自动完成每日闲鱼币任务（签到/浏览/收藏/分享/直播等）\n一次运行多个账号需切换账号\n点击开始任务自动运行\n-----------\n⚠️ 闲鱼官方可能更新活动页面，若任务失效请等待更新",
+        "vvv": 1,
+        "shortcut": "https://www.icloud.com/shortcuts/this-is-placeholder",
+        "list": [
+            "❤️开始任务❤️",
+            "闲鱼币签到",
+            "浏览商品赚币",
+            "交流反馈"
+        ],
+        "mapping": {
+            "交流反馈": {
+                "url": "mqqapi://card/show_pslcard?src_type=internal&version=1&uin=884282432&card_type=group&source=qrcode"
+            },
+            "❤️开始任务❤️": {
+                "type": "task",
+                "key": [
+                    "闲鱼币日常"
+                ]
+            },
+            "闲鱼币签到": {
+                "url": "xianyu://m.xianyu.com/tbopen/index.html?h5Url=https%3A%2F%2Fssr.m.goofish.com%2Fwow%2Fmoyu%2Fmoyu-project%2Fxianyu-coin-new%2Fpages%2Fhome%3Fx-ssr%3Dtrue%26channel%3Dmypersonal%26force_ssr%3Dtrue%26forceWebView2001%3Dtrue%26useCusFont%3Dtrue"
+            },
+            "浏览商品赚币": {
+                "url": "xianyu://m.xianyu.com/tbopen/index.html?h5Url=https%3A%2F%2Fm.xianyu.com"
+            }
+        },
+        "taskList": [
+            "闲鱼币日常"
+        ]
+    },
+    "taskData": {
+        "tag": "xianyu_daily",
+        "common": {
+            "url": "https://raw.githubusercontent.com/jiutiao/TTTASK/refs/heads/master/src/xianyu/new/xy_engine.txt"
+        },
+        "闲鱼币日常": {
+            "type": "task1",
+            "endpage": "xianyu://m.xianyu.com/tbopen/index.html?h5Url=https%3A%2F%2Fm.xianyu.com",
+            "main": "xianyu://m.xianyu.com/tbopen/index.html?h5Url=https%3A%2F%2Fssr.m.goofish.com%2Fwow%2Fmoyu%2Fmoyu-project%2Fxianyu-coin-new%2Fpages%2Fhome%3Fx-ssr%3Dtrue%26channel%3Dmypersonal%26force_ssr%3Dtrue%26forceWebView2001%3Dtrue%26useCusFont%3Dtrue",
+            "endMessage": "闲鱼币任务全部完成",
+            "task": {
+                "tag": "xianyu_daily",
+                "scheme": "xianyu://m.xianyu.com/tbopen/index.html?h5Url=",
+                "baseurl": "://ssr.m.goofish.com/wow/moyu/moyu-project/xianyu-coin-new/pages/home?x-ssr=true&channel=mypersonal&taskId=占位参数1&source=占位参数2",
+                "wait": 15,
+                "wait2": 8,
+                "param": {
+                    "商品分类": [
+                        "手机",
+                        "平板",
+                        "电脑",
+                        "相机",
+                        "耳机",
+                        "手表",
+                        "包包",
+                        "手办"
+                    ]
+                },
+                "before": [],
+                "item": [
+                    "daily_sign_in sign_home",
+                    "browse_item item_list",
+                    "collect_good favorite",
+                    "share_item share_page",
+                    "community_view community",
+                    "browse_second second_page",
+                    "daily_bonus bonus",
+                    "watch_live live_room"
+                ]
+            }
+        }
+    }
+}
