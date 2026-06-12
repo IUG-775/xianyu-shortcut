@@ -2,27 +2,22 @@ function run () {
     var data = [];
     var More = configValue ? configValue : 1;
 
+    // 闲鱼币主页面（已通过 Universal Link 验证可跳闲鱼）
     var COIN_HOME = "https://ssr.m.goofish.com/wow/moyu/moyu-project/xianyu-coin-new/pages/home?x-ssr=true&channel=mypersonal&force_ssr=true&forceWebView2001=true&useCusFont=true";
-    var XY_HOME = "https://m.xianyu.com";
+    var XY_HOME = "https://ssr.m.goofish.com";  // 备用：闲鱼首页
 
-    var xianyuScheme = {
-      scheme:"taobaolite",
-      main:"taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
-      start: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
-      end: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME)
-    };
-
-    var browseScheme = {
-      scheme:"taobaolite",
-      main:"taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME),
-      start: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(COIN_HOME),
-      end: "taobaolite://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(XY_HOME),
-      type:"url"
+    // ====== 简化为单一 Scheme 模式 ======
+    // Universal Link 模式 - 不再需要 scheme 拼接
+    var ulScheme = {
+      // 用 https:// 触发 Universal Link
+      main: COIN_HOME,
+      start: COIN_HOME,
+      end: XY_HOME
     };
 
     var schemes = {
-      1: [xianyuScheme],
-      2: [xianyuScheme, browseScheme]
+      1: [ulScheme],
+      2: [ulScheme]
     };
 
     var scheme = schemes[More] || schemes[1];
@@ -38,6 +33,7 @@ function run () {
         var wait = oneTask.task.wait;
         var paramObj = oneTask.task.param || {};
 
+        // ====== 任务开始：跳转到闲鱼币主页面 ======
         if (s && s.start) {
           data.push({
             url: s.start,
@@ -45,23 +41,26 @@ function run () {
           });
         }
 
+        // ====== Before 任务 ======
         before.map(function(v) {
-          var fullUrl = "https" + v.url;
           data.push({
-            url: s.scheme + "://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(fullUrl),
+            url: "https" + v.url,
             wait: v.wait
           });
         });
 
+        // ====== 主页面再次访问 ======
         data.push({
           url: s.main,
           wait: 5
         });
 
+        // ====== 主任务 ======
         itme.map(function(v, i) {
           var parts = v.split(" ");
           var url = baseUrl;
 
+          // 参数随机化
           for (var key in paramObj) {
             var arr = paramObj[key];
             if (arr && arr.length > 0) {
@@ -71,6 +70,7 @@ function run () {
             }
           }
 
+          // 占位参数替换
           parts.map(function(p, idx) {
             if (p) {
               var num = idx + 1;
@@ -79,9 +79,9 @@ function run () {
             }
           });
 
-          var h5Url = "https" + url;
+          // 关键：直接用 https:// URL
           data.push({
-            url: s.scheme + "://m.xianyu.com/tbopen/index.html?h5Url=" + encodeURIComponent(h5Url),
+            url: "https" + url,
             wait: wait
           });
 
@@ -93,6 +93,7 @@ function run () {
           }
         });
 
+        // ====== 任务结束 ======
         if (s && s.end) {
           data.push({
             url: s.end,
